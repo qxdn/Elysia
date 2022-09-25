@@ -142,7 +142,8 @@ dmypy.json
 
 # IDE
 # vscode
-./vscode
+.vscode
 
 # Bot
 .env.*
+data
