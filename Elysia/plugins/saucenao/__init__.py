@@ -50,7 +50,7 @@ def _generate_message(result: SearchResult) -> Message:
             MessageSegment.text(f"标题:{result.title}\n"),
             MessageSegment.text(f"相似度:{result.similarity}%\n"),
             MessageSegment.image(result.thumbnail),
-            MessageSegment.text(f"链接:{result.image_url}\n"),
+            MessageSegment.text(f"\n链接:{result.image_url}\n"),
         ]
     )
 
@@ -80,14 +80,15 @@ async def _deal_search_group(bot: Bot, event: GroupMessageEvent):
     results, _ = await _deal_search(event)
 
     data_dict = _generate_group_forward_message(results)
+    login = await bot.get_login_info()
     await bot.send_group_forward_msg(
         group_id=event.group_id,
         messages=[
             {
                 "type": "node",
                 "data": {
-                    "name": event.sender.nickname,
-                    "uin": event.user_id,
+                    "name": login["nickname"],
+                    "uin": event.self_id,
                     "content": content,
                 },
             }
