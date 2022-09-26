@@ -2,20 +2,13 @@ import json
 from random import choice
 from typing import List
 
-from Elysia.rule import is_private_msg
 from nonebot import get_driver
-from nonebot.adapters.onebot.v11 import (
-    Bot,
-    GroupMessageEvent,
-    Message,
-    MessageEvent,
-    MessageSegment,
-    PrivateMessageEvent,
-)
-from nonebot.config import Config as botConfig
+from nonebot.adapters.onebot.v11 import (Bot, GroupMessageEvent, Message,
+                                         MessageEvent, MessageSegment,
+                                         PrivateMessageEvent)
 from nonebot.adapters.onebot.v11.helpers import Cooldown, extract_image_urls
-from nonebot.utils import DataclassEncoder
 from nonebot.log import logger
+from nonebot.utils import DataclassEncoder
 
 from .config import Config
 from .data_source import SauceNAO, SearchResult
@@ -27,7 +20,7 @@ plugin_config: Config = Config.parse_obj(get_driver().config)
 
 saucenao = SauceNAO(api_key=plugin_config.saucenao_api)
 
-saucenao_matcher = saucenao.on_message("搜图", "通过图片反向查询出处")
+saucenao_matcher = saucenao.on_command("搜图", "通过图片反向查询出处")
 
 
 async def _deal_search(event: MessageEvent):
@@ -36,7 +29,8 @@ async def _deal_search(event: MessageEvent):
     """
     img = extract_image_urls(event.message)
     if not img:
-        await saucenao_matcher.reject("请发送图片而不是其他东西！！")
+        logger.info("[以图搜图]输入的不是图片")
+        await saucenao_matcher.finish("请发送图片而不是其他东西！！")
 
     return await saucenao.search_from_url(img[0])
 
