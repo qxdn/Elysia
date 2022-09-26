@@ -36,3 +36,17 @@ def to_bot():
         return event.is_tome()
     
     return Rule(_to_bot)
+
+def is_private_msg():
+    async def _is_private_msg(event:Event)->bool:
+        if isinstance(event,PrivateMessageEvent):
+            return True
+        return False
+    return Rule(_is_private_msg)
+
+def is_group_msg():
+    async def _is_group_msg(event:Event)->bool:
+        if isinstance(event,GroupMessageEvent):
+            return True
+        return False
+    return Rule(_is_group_msg)

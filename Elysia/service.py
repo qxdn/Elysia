@@ -85,7 +85,7 @@ class Service:
             self._generate_service_config(service, self.docs)
 
         with open(path, "w", encoding="utf-8") as w:
-            w.write(json.dumps(service_data, indent=4))
+            w.write(json.dumps(service_data, indent=4,ensure_ascii=False))
 
     def load_service(self, service: str) -> dict:
         path = SERVICES_DIR / f"{service}.json"
@@ -117,7 +117,7 @@ class Service:
         )
         try:
             with open(path, "w", encoding="utf-8") as w:
-                w.write(json.dumps(data.dict(), indent=4))
+                w.write(json.dumps(data.dict(), indent=4,ensure_ascii=False))
         except Exception:
             raise WriteFileError("Write service info failed!")
 
@@ -143,7 +143,7 @@ class Service:
         permission: Optional[Union[Permission, T_PermissionChecker]] = None,
         handlers: Optional[List[Union[T_Handler, Dependent]]] = None,
         block: bool = True,
-        priority: int = 1,
+        priority: int = 5,
         state: Optional[T_State] = None,
         **kwargs,
     ) -> Type[Matcher]:
@@ -223,7 +223,7 @@ class ServiceTools(object):
             )
 
         with open(path, "w", encoding="utf-8") as w:
-            w.write(json.dumps(service_data, indent=4))
+            w.write(json.dumps(service_data, indent=4,ensure_ascii=False))
 
     @staticmethod
     def load_service(service: str) -> dict:

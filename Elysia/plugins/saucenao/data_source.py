@@ -2,7 +2,7 @@ from random import choice
 from typing import Optional, Tuple
 
 from Elysia.exceptions import RequestError
-from Elysia.rule import is_in_service
+from Elysia.rule import is_in_service,to_bot
 from Elysia.service import Service
 from Elysia.utils import requests
 
@@ -62,7 +62,7 @@ class SauceNAO(Service):
         threshold: float = 70,
         **kwargs
     ) -> None:
-        Service.__init__(self,"以图搜图", "搜索图片出处，基于SauceNAO", rule=is_in_service("以图搜图"))
+        Service.__init__(self,"以图搜图", "搜索图片出处，基于SauceNAO", rule=is_in_service("以图搜图")&to_bot())
 
         params = {
             "api_key": api_key,
