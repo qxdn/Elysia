@@ -1,13 +1,14 @@
 from random import choice
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from Elysia.exceptions import RequestError
 from Elysia.rule import is_in_service,to_bot
 from Elysia.service import Service
-from Elysia.utils import requests
+from Elysia.utils import requests,image_utils
 
 from .db import SauceNAO_Index
 
+from nonebot.log import logger
 
 class SearchResult():
     
@@ -30,10 +31,10 @@ class SearchResult():
     def image_url(self,_image_url:str):
         self._image_url = _image_url
     @property
-    def thumbnail(self)->str:
+    def thumbnail(self)->Union[str,bytes]:
         return self._thumbnail
     @thumbnail.setter
-    def thumbnail(self,_thumbnail:str):
+    def thumbnail(self,_thumbnail:Union[str,bytes]):
         self._thumbnail = _thumbnail
 
     def __str__(self) -> str:
@@ -104,17 +105,18 @@ class SauceNAO(Service):
         # 返回json
         return response.json()
 
-    def _generate_result(self, result: dict) -> SearchResult:
+    async def _generate_result(self, result: dict) -> SearchResult:
         r = SearchResult()
         r.title = result["data"].get("title", result["header"]["index_name"])
         r.similarity = result["header"]["similarity"]
         r.image_url = choice(result["data"].get("ext_urls", ["None"]))
-        r.thumbnail = result["header"]["thumbnail"]
+        r.thumbnail = await image_utils.image_url2byte(result["header"]["thumbnail"])
         return r
 
     async def _search(self, params: dict, files=None) -> Tuple[list, bool]:
         data = await self._request(params, files)
         result = data.get("results", None)
+        logger.debug("get result {}",result)
         if None == result:
             return list(),False
 
@@ -123,7 +125,7 @@ class SauceNAO(Service):
         r = list()
         find = False
         for i in range(size):
-            _r = self._generate_result(result[i])
+            _r = await self._generate_result(result[i])
             if float(_r.similarity) >= self.threshold:
                 find = True
             r.append(_r)
