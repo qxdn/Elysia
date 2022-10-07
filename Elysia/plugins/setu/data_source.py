@@ -11,7 +11,7 @@ class Setu(Service):
     '''
     def __init__(self) -> None:
         Service.__init__(
-            self,"随机色图","使用lolicon api搜索随机色图",rule=is_in_service("随机色图")&to_bot
+            self,"随机色图","使用lolicon api搜索随机色图",rule=is_in_service("随机色图")&to_bot()
         )
     
     @classmethod
