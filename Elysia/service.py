@@ -1,14 +1,17 @@
 import json
-from types import ModuleType
-from typing import List, Optional, Union, Dict, Type, Tuple, Set
-from pydantic import BaseModel
+import re
 from pathlib import Path
+from types import ModuleType
+from typing import Dict, List, Optional, Set, Tuple, Type, Union
+
+from nonebot.dependencies import Dependent
 from nonebot.matcher import Matcher
 from nonebot.permission import Permission
 from nonebot.rule import Rule, command, keyword, regex
-from nonebot.dependencies import Dependent
-from nonebot.typing import T_RuleChecker, T_Handler, T_PermissionChecker, T_State
-from .exceptions import WriteFileError, ReadFileError
+from nonebot.typing import T_Handler, T_PermissionChecker, T_RuleChecker, T_State
+from pydantic import BaseModel
+
+from .exceptions import ReadFileError, WriteFileError
 
 # 持久化路径
 SERVICES_DIR = Path(".") / "data" / "services"
@@ -85,7 +88,7 @@ class Service:
             self._generate_service_config(service, self.docs)
 
         with open(path, "w", encoding="utf-8") as w:
-            w.write(json.dumps(service_data, indent=4,ensure_ascii=False))
+            w.write(json.dumps(service_data, indent=4, ensure_ascii=False))
 
     def load_service(self, service: str) -> dict:
         path = SERVICES_DIR / f"{service}.json"
@@ -117,7 +120,7 @@ class Service:
         )
         try:
             with open(path, "w", encoding="utf-8") as w:
-                w.write(json.dumps(data.dict(), indent=4,ensure_ascii=False))
+                w.write(json.dumps(data.dict(), indent=4, ensure_ascii=False))
         except Exception:
             raise WriteFileError("Write service info failed!")
 
@@ -210,6 +213,42 @@ class Service:
         commands = set([cmd]) | (aliases or set())
         return self.on_message(rule=command(*commands) & rule, block=True, **kwargs)
 
+    def on_keyword(
+        self,
+        keywords: Set[str],
+        docs: str,
+        rule: Optional[Union[Rule, T_RuleChecker]] = None,
+        **kwargs,
+    ) -> Type[Matcher]:
+        if not rule:
+            rule = self.rule
+
+        name = list(keywords)[0] + "-onkw"
+
+        cmd_list = self._load_cmds()
+
+        cmd_list[name] = CommandInfo(type="keyword", docs=docs, aliases=keywords).dict()
+        self._save_cmds(cmd_list)
+
+        return self.on_message(rule=keyword(*keywords) & rule, **kwargs)
+
+    def on_regex(
+        self,
+        pattern: str,
+        docs: str,
+        flags: Union[int, re.RegexFlag] = 0,
+        rule: Optional[Union[Rule, T_RuleChecker]] = None,
+        **kwargs,
+    ) -> Type[Matcher]:
+        if not rule:
+            rule = self.rule
+
+        cmd_list = self._load_cmds()
+        cmd_list[pattern] = CommandInfo(type="regex", docs=docs, aliases=list()).dict()
+        self._save_cmds(cmd_list)
+
+        return self.on_message(rule=regex(pattern, flags) & rule, **kwargs)
+
 
 class ServiceTools(object):
     @staticmethod
@@ -223,7 +262,7 @@ class ServiceTools(object):
             )
 
         with open(path, "w", encoding="utf-8") as w:
-            w.write(json.dumps(service_data, indent=4,ensure_ascii=False))
+            w.write(json.dumps(service_data, indent=4, ensure_ascii=False))
 
     @staticmethod
     def load_service(service: str) -> dict:

@@ -11,6 +11,7 @@ nonebot2 = "^2.0.0-beta.1"
 
 [tool.poetry.dev-dependencies]
 nb-cli = "^0.6.0"
+nonebug = "^0.2.1"
 
 [tool.nonebot]
 plugins = ["nonebot_plugin_docs", "nonebot_plugin_apscheduler"]
