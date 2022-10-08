@@ -54,8 +54,8 @@ def _generate_msg(info, url):
     return msg
 
 
-# 冷却一分钟
-@random_setu.handle([Cooldown(60, prompt=_search_flmt_notice)])
+# 冷却30秒
+@random_setu.handle([Cooldown(30, prompt=_search_flmt_notice)])
 async def get_random_setu_private(bot: Bot, event: PrivateMessageEvent, state: T_State):
 
     r18, tags = _get_args(state)
@@ -75,8 +75,8 @@ async def get_random_setu_private(bot: Bot, event: PrivateMessageEvent, state: T
     await random_setu.finish(msg)
 
 
-# 冷却一分钟
-@random_setu.handle([Cooldown(5, prompt=_search_flmt_notice)])
+# 冷却30
+@random_setu.handle([Cooldown(30, prompt=_search_flmt_notice)])
 async def get_random_setu_group(bot: Bot, event: GroupMessageEvent, state: T_State):
     r18, tags = _get_args(state)
 
