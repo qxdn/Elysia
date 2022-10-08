@@ -21,6 +21,8 @@ from nonebot.log import logger
 from .config import Setu_Type
 from .data_source import Setu
 
+from Elysia.utils import image_utils
+
 _search_flmt_notice = choice(["慢...慢一..点❤", "冷静1下", "歇会歇会~~"])
 
 setu = Setu()
@@ -49,8 +51,10 @@ def _get_args(state: T_State):
     return r18, tags
 
 
-def _generate_msg(info, url):
-    msg = Message([MessageSegment.text(info), MessageSegment.image(url)])
+async def _generate_msg(info, url):
+    msg = Message([MessageSegment.text(info), MessageSegment.image(
+        await image_utils.image_url2byte(url)
+    )])
     return msg
 
 
@@ -70,7 +74,7 @@ async def get_random_setu_private(bot: Bot, event: PrivateMessageEvent, state: T
     if None == url:
         await random_setu.finish("找不到呢")
 
-    msg = _generate_msg(info, url)
+    msg = await _generate_msg(info, url)
 
     await random_setu.finish(msg)
 
@@ -90,7 +94,7 @@ async def get_random_setu_group(bot: Bot, event: GroupMessageEvent, state: T_Sta
     if None == url:
         await random_setu.finish("找不到呢")
 
-    msg = _generate_msg(info, url)
+    msg = await _generate_msg(info, url)
     msg: dict = json.loads(json.dumps(msg, cls=DataclassEncoder))
     login = await bot.get_login_info()
     await bot.send_group_forward_msg(
