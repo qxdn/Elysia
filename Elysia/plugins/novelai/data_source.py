@@ -11,7 +11,7 @@ class novelai(Service):
     @staticmethod
     def txt2body(seed, inputs: str):
         return {
-            "input": inputs + baseTag,
+            "input": baseTag+inputs,
             "model": "safe-diffusion",
             "parameters": {
                 "width": 512,
