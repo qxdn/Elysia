@@ -11,7 +11,7 @@ txt2image_matcher = novelai().on_command("生成色图", "使用文字生成色�
 @txt2image_matcher.handle()
 async def txt2image(bot:Bot,event: MessageEvent):
     raw_seed = None
-    raw_message = event.get_message().extract_plain_text().replace("，",",")
+    raw_message = event.get_message().extract_plain_text().replace("，",",").replace("生成色图 ","")
 
     # TODO: 添加参数提取
     inputs = raw_message
