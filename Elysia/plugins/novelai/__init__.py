@@ -16,7 +16,7 @@ async def txt2image(bot:Bot,event: MessageEvent):
     # TODO: 添加参数提取
     inputs = raw_message
     if not inputs:
-        txt2image_matcher.finish("请输入你想要生成的tag")
+        await txt2image_matcher.finish("请输入你想要生成的tag")
     seed = raw_seed or int(time.time())
 
     prehandle = Message()
