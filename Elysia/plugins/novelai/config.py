@@ -22,5 +22,5 @@ header = {
 }
 
 
-baseTag="masterpiece, best quality,{{masterpiece}},extremely detailed,{best quality},{highres},original,[an extremely delicate and beatuiful],"
+baseTag="masterpiece, best quality,{{masterpiece}},extremely detailed,{best quality},{highres},"
 lowQuality = 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry,'
