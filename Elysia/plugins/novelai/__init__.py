@@ -16,7 +16,7 @@ import time
 
 txt2image_matcher = novelai().on_command("生成色图", "使用文字生成色图", priority=2)
 
-# @txt2image_matcher.handle()
+@txt2image_matcher.handle()
 async def novelai_txt2image(bot: Bot, event: MessageEvent):
     raw_seed = None
     raw_message = (
@@ -53,7 +53,7 @@ async def novelai_txt2image(bot: Bot, event: MessageEvent):
     await bot.send(event, result, at_sender=True)
 
 
-@txt2image_matcher.handle()
+#@txt2image_matcher.handle()
 async def cloudserverapi_txt2image(bot: Bot, event: MessageEvent):
     raw_seed = None
     raw_message = (
