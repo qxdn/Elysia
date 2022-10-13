@@ -9,9 +9,9 @@ class novelai(Service):
         Service.__init__(self, "生成色图", "AI生成色图", rule=is_in_service("生成色图"))
 
     @staticmethod
-    def txt2body(seed, inputs: str):
+    def novelai_txt2body(seed, inputs: str):
         return {
-            "input": baseTag+inputs,
+            "input": baseTag + inputs,
             "model": "safe-diffusion",
             "parameters": {
                 "width": 512,
@@ -24,4 +24,19 @@ class novelai(Service):
                 "ucPreset": 0,
                 "uc": lowQuality,
             },
+        }
+
+    @staticmethod
+    def cloudserverapi_txt2body(seed, inputs: str):
+        return {
+            "prompt": baseTag + inputs,
+            "width": 512,
+            "height": 768,
+            "scale": 12,
+            "sampler": "k_euler_ancestral",
+            "steps": 28,
+            "seed": seed,
+            "n_samples": 1,
+            "ucPreset": 0,
+            "uc": lowQuality,
         }
